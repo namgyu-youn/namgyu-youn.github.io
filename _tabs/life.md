@@ -1,7 +1,8 @@
 ---
 layout: category
-title: 4. Life
-category: "4. Life"
+title: "Life"
+category: life
+permalink: /life/
 icon: fas fa-heart
 order: 6
 ---

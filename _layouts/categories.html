@@ -1,138 +1,69 @@
 ---
 layout: page
-# All the Categories of posts
+# 타임라인 스타일의 카테고리 레이아웃
 ---
 
 {% include lang.html %}
 
-{% assign HEAD_PREFIX = 'h_' %}
-{% assign LIST_PREFIX = 'l_' %}
+<div id="page-category">
+  <h1 class="ps-lg-2">
+    <i class="far fa-folder-open fa-fw text-muted"></i>
+    {{ page.title }}
+    <span class="lead text-muted ps-2">{{ page.posts | size }}</span>
+  </h1>
 
-{% assign group_index = 0 %}
+  {% assign category_slug = page.category | default: page.title | slugify %} {%
+  assign actual_link = '/categories/' | append: category_slug | append: '/' |
+  relative_url %}
+  <p class="d-none">
+    Category link: <a href="{{ actual_link }}">{{ category_slug }}</a>
+  </p>
 
-{% assign sort_categories = site.categories | sort %}
-
-{% for category in sort_categories %}
-  {% assign category_name = category | first %}
-  {% assign posts_of_category = category | last %}
-  {% assign first_post = posts_of_category | first %}
-
-  {% if category_name == first_post.categories[0] %}
-    {% assign sub_categories = '' | split: '' %}
-
-    {% for post in posts_of_category %}
-      {% assign second_category = post.categories[1] %}
-      {% if second_category %}
-        {% unless sub_categories contains second_category %}
-          {% assign sub_categories = sub_categories | push: second_category %}
-        {% endunless %}
-      {% endif %}
-    {% endfor %}
-
-    {% assign sub_categories = sub_categories | sort %}
-    {% assign sub_categories_size = sub_categories | size %}
-
-    <div class="card categories">
-      <!-- top-category -->
-      <div
-        id="{{ HEAD_PREFIX }}{{ group_index }}"
-        class="card-header d-flex justify-content-between hide-border-bottom"
-      >
-        <span class="ms-2">
-          <i class="far fa-folder{% if sub_categories_size > 0 %}-open{% endif %} fa-fw"></i>
-
-          {% capture _category_url %}/categories/{{ category_name | slugify | url_encode }}/{% endcapture %}
-          <a href="{{ _category_url | relative_url }}" class="mx-2">{{ category_name }}</a>
-
-          <!-- content count -->
-          {% assign top_posts_size = site.categories[category_name] | size %}
-          <span class="text-muted small font-weight-light">
-            {% if sub_categories_size > 0 %}
-              {{ sub_categories_size }}
-              {% if sub_categories_size > 1 %}
-                {{
-                  site.data.locales[lang].categories.category_measure.plural
-                  | default: site.data.locales[lang].categories.category_measure
-                }}
-              {% else %}
-                {{
-                  site.data.locales[lang].categories.category_measure.singular
-                  | default: site.data.locales[lang].categories.category_measure
-                }}
-              {% endif -%}
-              ,
-            {% endif %}
-
-            {{ top_posts_size }}
-
-            {% if top_posts_size > 1 %}
-              {{
-                site.data.locales[lang].categories.post_measure.plural
-                | default: site.data.locales[lang].categories.post_measure
-              }}
-            {% else %}
-              {{
-                site.data.locales[lang].categories.post_measure.singular
-                | default: site.data.locales[lang].categories.post_measure
-              }}
-            {% endif %}
-          </span>
+  <div id="archives" class="pl-xl-3">
+    {% assign posts_by_year = page.posts | group_by_exp: "post", "post.date |
+    date: '%Y'" %} {% for year in posts_by_year %}
+    <time class="year lead d-block">{{ year.name }}</time>
+    <ul class="list-unstyled">
+      {% for post in year.items %}
+      <li>
+        {% assign ts = post.date | date: '%s' %}
+        <span class="date day" data-ts="{{ ts }}" data-df="DD"
+          >{{ post.date | date: '%d' }}</span
+        >
+        <span
+          class="date month small text-muted ms-1"
+          data-ts="{{ ts }}"
+          data-df="/ MM"
+        >
+          {{ post.date | date: '/ %m' }}
         </span>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endfor %}
+  </div>
+</div>
 
-        <!-- arrow -->
-        {% if sub_categories_size > 0 %}
-          <a
-            href="#{{ LIST_PREFIX }}{{ group_index }}"
-            data-bs-toggle="collapse"
-            aria-expanded="true"
-            aria-label="{{ HEAD_PREFIX }}{{ group_index }}-trigger"
-            class="category-trigger hide-border-bottom"
-          >
-            <i class="fas fa-fw fa-angle-down"></i>
-          </a>
-        {% else %}
-          <span data-bs-toggle="collapse" class="category-trigger hide-border-bottom disabled">
-            <i class="fas fa-fw fa-angle-right"></i>
-          </span>
-        {% endif %}
-      </div>
-      <!-- .card-header -->
+<script>
+  // Sort posts in reverse chronological order within each year
+  document.addEventListener("DOMContentLoaded", function () {
+    const years = document.querySelectorAll("#archives time.year");
+    years.forEach((year) => {
+      const list = year.nextElementSibling;
+      const items = Array.from(list.children);
+      items.sort((a, b) => {
+        const dateA = new Date(
+          a.querySelector(".date.day").getAttribute("data-ts") * 1000
+        );
+        const dateB = new Date(
+          b.querySelector(".date.day").getAttribute("data-ts") * 1000
+        );
+        return dateB - dateA; // 역순 정렬 (최신순)
+      });
 
-      <!-- Sub-categories -->
-      {% if sub_categories_size > 0 %}
-        <div id="{{ LIST_PREFIX }}{{ group_index }}" class="collapse show" aria-expanded="true">
-          <ul class="list-group">
-            {% for sub_category in sub_categories %}
-              <li class="list-group-item">
-                <i class="far fa-folder fa-fw"></i>
-
-                {% capture _sub_ctg_url %}/categories/{{ sub_category | slugify | url_encode }}/{% endcapture %}
-                <a href="{{ _sub_ctg_url | relative_url }}" class="mx-2">{{ sub_category }}</a>
-
-                {% assign posts_size = site.categories[sub_category] | size %}
-                <span class="text-muted small font-weight-light">
-                  {{ posts_size }}
-
-                  {% if posts_size > 1 %}
-                    {{
-                      site.data.locales[lang].categories.post_measure.plural
-                      | default: site.data.locales[lang].categories.post_measure
-                    }}
-                  {% else %}
-                    {{
-                      site.data.locales[lang].categories.post_measure.singular
-                      | default: site.data.locales[lang].categories.post_measure
-                    }}
-                  {% endif %}
-                </span>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %}
-    </div>
-    <!-- .card -->
-
-    {% assign group_index = group_index | plus: 1 %}
-  {% endif %}
-{% endfor %}
+      // 정렬된 항목들로 목록 다시 채우기
+      items.forEach((item) => list.appendChild(item));
+    });
+  });
+</script>

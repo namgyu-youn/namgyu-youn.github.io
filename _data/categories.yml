@@ -1,41 +1,41 @@
-- id: 1
-  name: "1. Open Source (GitHub)"
+- id: opensource
+  name: "Open Source (GitHub)"
   children:
-    - id: 1.1
-      name: "1.1 Open source contribution (Issue/PR)"
-    - id: 1.2
-      name: "1.2 DevOps : Useful tools in my workspace"
-    - id: 1.3
-      name: "1.3 Code review"
+    - id: contribution
+      name: "Open source contribution"
+    - id: devops
+      name: "DevOps Tools"
+    - id: codereview
+      name: "Code review"
 
-- id: 2
-  name: "2. Deep Learning"
+- id: deeplearning
+  name: "Deep Learning"
   children:
-    - id: 2.1
-      name: "2.1 Computer Vision"
-    - id: 2.2
-      name: "2.2 TinyML"
-    - id: 2.3
-      name: "2.3 Optimization"
+    - id: cv
+      name: "Computer Vision"
+    - id: tinyml
+      name: "TinyML"
+    - id: optimization
+      name: "Optimization"
 
-- id: 3
-  name: "3. Programming"
+- id: programming
+  name: "Programming"
   children:
-    - id: 3.1
-      name: "3.1 Python"
-    - id: 3.2
-      name: "3.2 Rust"
-    - id: 3.3
-      name: "3.3 GitHub Actions"
+    - id: python
+      name: "Python"
+    - id: rust
+      name: "Rust"
+    - id: githubactions
+      name: "GitHub Actions"
 
-- id: 4
-  name: "4. Life"
+- id: life
+  name: "Life"
   children:
-    - id: 4.1
-      name: "4.1 Daily Life"
-    - id: 4.2
-      name: "4.2 Career"
-    - id: 4.1
-      name: "4.1 Blog & Obsidian"
-    - id: 4.2
-      name: "4.2 Ubuntu & Linux"
+    - id: daily
+      name: "Daily Life"
+    - id: career
+      name: "Career"
+    - id: blog
+      name: "Blog & Obsidian"
+    - id: linux
+      name: "Ubuntu & Linux"

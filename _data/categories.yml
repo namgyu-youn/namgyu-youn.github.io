@@ -1,5 +1,5 @@
 - id: 1
-  name: "1. GitHub"
+  name: "1. Open Source (GitHub)"
   children:
     - id: 1.1
       name: "1.1 Open source contribution (Issue/PR)"

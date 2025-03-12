@@ -16,17 +16,17 @@ timezone: Asia/Seoul
 
 title: ng-youn
 
-tagline: Reinforcement Learning & Software Engineering # 관심사를 기반으로 한 부제목
+tagline: Youn's blog # 관심사를 기반으로 한 부제목
 
 description: >- # used by seo meta and the atom feed
   Tech blog for GitHub open source contribution
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
-url: "https://ng-youn.com"
+url: "https://namgyu-youn.github.io"
 
 github:
-  username: ng-youn # GitHub Username
+  username: namgyu-youn # GitHub Username
 
 twitter:
   username: # change to your Twitter username

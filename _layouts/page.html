@@ -1,20 +1,52 @@
 ---
-layout: default
+layout: page
+refactor: true
+panel_includes:
+  - toc
 ---
 
-{% include lang.html %}
+<h1 data-toc-skip>{{ page.title }}</h1>
 
-<article class="px-1">
-  {% if page.layout == 'page' or page.collection == 'tabs' %}
-    {% assign tab_key = page.title | downcase %}
-    {% assign title = site.data.locales[lang].tabs[tab_key] | default: page.title %}
-    <h1 class="dynamic-title">
-      {{ title }}
-    </h1>
-    <div class="content">
-      {{ content }}
-    </div>
-  {% else %}
-    {{ content }}
-  {% endif %}
-</article>
+<div class="post-meta text-muted">
+  <!-- 기존 post-meta 내용 -->
+  <div>
+    {% include datetime.html date=page.date tooltip=true %} {% if
+    page.last_modified_at %} &nbsp; {% include datetime.html
+    date=page.last_modified_at tooltip=true prefix='<i>Updated</i>: ' %} {%
+    endif %}
+  </div>
+
+  <!-- 여기에 추가적인 커스텀 메타 정보 추가 -->
+  <div class="post-custom-meta mt-3 border-top pt-2">
+    <span>Posted on: {{ page.date | date: "%Y-%m-%d" }}</span>
+    <br />
+    {% if page.last_modified_at %}
+    <span>Edited on: {{ page.last_modified_at | date: "%Y-%m-%d" }}</span>
+    <br />
+    {% endif %} {% if page.categories.size > 0 %}
+    <span
+      >In: {% for category in page.categories %} {% if forloop.index > 1 %}, {%
+      endif %}
+      <a
+        href="{{ '/categories/' | append: category | replace: ' ', '-' | downcase | relative_url }}"
+        >{{ category }}</a
+      >
+      {% endfor %}
+    </span>
+    <br />
+    {% endif %} {% if site.pageviews.provider %}
+    <span
+      >Views:
+      <span id="pageviews"
+        >{{ site.data.pageviews[page.url] | default: 0 }}</span
+      ></span
+    >
+    {% endif %}
+  </div>
+</div>
+
+<div class="post-content">{{ content }}</div>
+
+<div class="post-tail-wrapper text-muted">
+  <!-- 기존 post-tail 내용 -->
+</div>

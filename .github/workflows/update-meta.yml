@@ -1,0 +1,39 @@
+name: Update Post Metadata
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "_posts/**"
+
+jobs:
+  update-metadata:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.0"
+          bundler-cache: true
+
+      - name: Install Dependencies
+        run: |
+          gem install jekyll front_matter_parser
+
+      - name: Update Post Metadata
+        run: |
+          ruby .github/scripts/update_metadata.rb
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add '_posts/'
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update post metadata" && git push)

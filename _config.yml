@@ -14,7 +14,7 @@ timezone: Asia/Seoul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: ng-youn
+title: namgyu-youn
 
 tagline: Youn's blog # 관심사를 기반으로 한 부제목
 
@@ -38,7 +38,7 @@ social:
   email: yynk2012@gmail.com # 이메일 주소를 입력하세요
   links:
     # The first element serves as the copyright owner's link
-    - https://github.com/ng-youn # GitHub 홈페이지 링크로 변경하세요
+    - https://github.com/namgyu-youn # GitHub 홈페이지 링크로 변경하세요
     - https://www.linkedin.com/in/namgyu-youn-50b82a286/
 
 # Site Verification Settings
@@ -92,7 +92,7 @@ comments:
     shortname: # Disqus 단축명
   # utterances settings › https://utteranc.es/
   utterances:
-    repo: ng-youn/ng-youn.com # 본인의 GitHub 사용자명/저장소명
+    repo: namgyu-youn/namgyu-youn.github.io # 본인의 GitHub 사용자명/저장소명
     issue_term: pathname # 이슈 매핑 방식
     label: comment # 이슈 라벨
     theme: github-light # 테마

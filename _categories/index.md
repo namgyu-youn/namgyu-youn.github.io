@@ -1,0 +1,1 @@
+---\nlayout: category\n---

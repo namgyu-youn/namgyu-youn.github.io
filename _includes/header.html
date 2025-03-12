@@ -1,0 +1,9 @@
+<nav>
+  <ul>
+    {% for tab in site.tabs %}
+      {% if tab.title != 'Home' %}
+        <li><a href="{{ tab.url | relative_url }}">{{ tab.title }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</nav>

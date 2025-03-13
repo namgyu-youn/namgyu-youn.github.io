@@ -1,5 +1,5 @@
 - id: opensource
-  name: "Open Source (GitHub)"
+  name: "Open Source"
   children:
     - id: contribution
       name: "Open source contribution"

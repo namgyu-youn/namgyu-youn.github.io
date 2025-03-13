@@ -1,6 +1,6 @@
 ---
 layout: category
-title: "Open Source (GitHub)"
+title: "Open Source"
 category: opensource
 permalink: /opensource/
 icon: fas fa-code-branch

@@ -1,25 +1,36 @@
 ---
 layout: page
-# 타임라인 스타일의 카테고리 레이아웃
+# The Categories page layout
 ---
 
 {% include lang.html %}
 
-<div id="page-category">
-  <h1 class="ps-lg-2">
-    <i class="far fa-folder-open fa-fw text-muted"></i>
-    {{ page.title }}
-    <span class="lead text-muted ps-2">{{ page.posts | size }}</span>
-  </h1>
+<h1 class="ps-lg-2">
+  <i class="far fa-folder-open fa-fw text-muted"></i>
+  {{ site.data.locales[lang].tabs.categories | default: "Categories" }}
+</h1>
 
-  <!-- 문제가 되는 코드 제거 -->
+<div id="categories-overview" class="pl-xl-3">
+  {% for category in site.categories %}
+  <div class="category-section mb-4">
+    <h3 class="category-name ps-lg-2">
+      {% assign category_name = category[0] %} {% assign found = false %} {% for
+      tab in site.tabs %} {% if tab.category == category_name or tab.title ==
+      category_name %} {% assign tab_url = tab.url %} {% assign found = true %}
+      <a href="{{ tab_url | relative_url }}">{{ category_name }}</a>
+      {% break %} {% endif %} {% endfor %} {% unless found %}
+      <a
+        href="{{ '/' | append: category_name | slugify | append: '/' | relative_url }}"
+        >{{ category_name }}</a
+      >
+      {% endunless %}
 
-  <div id="archives" class="pl-xl-3">
-    {% assign posts_by_year = page.posts | group_by_exp: "post", "post.date |
-    date: '%Y'" %} {% for year in posts_by_year %}
-    <time class="year lead d-block">{{ year.name }}</time>
-    <ul class="list-unstyled">
-      {% for post in year.items %}
+      <span class="text-muted ps-2">({{ category[1].size }})</span>
+    </h3>
+
+    <ul class="list-unstyled ps-lg-2">
+      {% assign posts = category[1] | sort: 'date' | reverse %} {% for post in
+      posts limit: 5 %}
       <li>
         {% assign ts = post.date | date: '%s' %}
         <span class="date day" data-ts="{{ ts }}" data-df="DD"
@@ -29,36 +40,30 @@ layout: page
           class="date month small text-muted ms-1"
           data-ts="{{ ts }}"
           data-df="/ MM"
+          >{{ post.date | date: '/ %m' }}</span
         >
-          {{ post.date | date: '/ %m' }}
-        </span>
         <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
       </li>
-      {% endfor %}
+      {% endfor %} {% if category[1].size > 5 %}
+      <li class="mt-2">
+        {% if found %}
+        <a
+          href="{{ tab_url | relative_url }}"
+          class="btn btn-sm btn-outline-primary"
+        >
+          더 보기 ({{ category[1].size | minus: 5 }}개 더)
+        </a>
+        {% else %}
+        <a
+          href="{{ '/' | append: category_name | slugify | append: '/' | relative_url }}"
+          class="btn btn-sm btn-outline-primary"
+        >
+          더 보기 ({{ category[1].size | minus: 5 }}개 더)
+        </a>
+        {% endif %}
+      </li>
+      {% endif %}
     </ul>
-    {% endfor %}
   </div>
+  {% endfor %}
 </div>
-
-<script>
-  // Sort posts in reverse chronological order within each year
-  document.addEventListener("DOMContentLoaded", function () {
-    const years = document.querySelectorAll("#archives time.year");
-    years.forEach((year) => {
-      const list = year.nextElementSibling;
-      const items = Array.from(list.children);
-      items.sort((a, b) => {
-        const dateA = new Date(
-          a.querySelector(".date.day").getAttribute("data-ts") * 1000
-        );
-        const dateB = new Date(
-          b.querySelector(".date.day").getAttribute("data-ts") * 1000
-        );
-        return dateB - dateA; // 역순 정렬 (최신순)
-      });
-
-      // 정렬된 항목들로 목록 다시 채우기
-      items.forEach((item) => list.appendChild(item));
-    });
-  });
-</script>

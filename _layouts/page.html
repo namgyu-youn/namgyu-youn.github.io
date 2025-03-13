@@ -26,12 +26,16 @@ panel_includes:
     {% endif %} {% if page.categories.size > 0 %}
     <span
       >In: {% for category in page.categories %} {% if forloop.index > 1 %}, {%
-      endif %}
+      endif %} {% assign tab_url = nil %} {% for tab in site.tabs %} {% if
+      tab.category == category or tab.title == category %} {% assign tab_url =
+      tab.url %} {% break %} {% endif %} {% endfor %} {% if tab_url %}
+      <a href="{{ tab_url | relative_url }}">{{ category }}</a>
+      {% else %}
       <a
-        href="{{ '/categories/' | append: category | replace: ' ', '-' | downcase | relative_url }}"
+        href="{{ '/' | append: category | replace: ' ', '-' | downcase | append: '/' | relative_url }}"
         >{{ category }}</a
       >
-      {% endfor %}
+      {% endif %} {% endfor %}
     </span>
     <br />
     {% endif %} {% if site.pageviews.provider %}
@@ -39,8 +43,8 @@ panel_includes:
       >Views:
       <span id="pageviews"
         >{{ site.data.pageviews[page.url] | default: 0 }}</span
-      ></span
-    >
+      >
+    </span>
     {% endif %}
   </div>
 </div>

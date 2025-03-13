@@ -2,19 +2,11 @@
 
 <span class="post-categories">
   In: {% for cat_id in cat_ids %} {% if forloop.index > 1 %}, {% endif %} {%
-  assign found = false %} {% for top_cat in site.data.categories %} {% if
-  top_cat.id == cat_id or top_cat.name == cat_id %} {% assign found = true %}
-  <a href="{{ '/categories/' | append: top_cat.name | slugify | relative_url }}"
-    >{{ top_cat.name }}</a
-  >
-  {% break %} {% endif %} {% for sub_cat in top_cat.children %} {% if sub_cat.id
-  == cat_id or sub_cat.name == cat_id %} {% assign found = true %}
-  <a href="{{ '/categories/' | append: sub_cat.name | slugify | relative_url }}"
-    >{{ sub_cat.name }}</a
-  >
-  {% break %} {% endif %} {% endfor %} {% if found %}{% break %}{% endif %} {%
-  endfor %} {% unless found %}
-  <a href="{{ '/categories/' | append: cat_id | slugify | relative_url }}"
+  assign found = false %} {% for tab in site.tabs %} {% if tab.category ==
+  cat_id or tab.title == cat_id %} {% assign found = true %}
+  <a href="{{ tab.url | relative_url }}">{{ tab.title }}</a>
+  {% break %} {% endif %} {% endfor %} {% unless found %}
+  <a href="{{ '/' | append: cat_id | slugify | append: '/' | relative_url }}"
     >{{ cat_id }}</a
   >
   {% endunless %} {% endfor %}

@@ -12,12 +12,7 @@ layout: page
     <span class="lead text-muted ps-2">{{ page.posts | size }}</span>
   </h1>
 
-  {% assign category_slug = page.category | default: page.title | slugify %} {%
-  assign actual_link = '/categories/' | append: category_slug | append: '/' |
-  relative_url %}
-  <p class="d-none">
-    Category link: <a href="{{ actual_link }}">{{ category_slug }}</a>
-  </p>
+  <!-- 문제가 되는 코드 제거 -->
 
   <div id="archives" class="pl-xl-3">
     {% assign posts_by_year = page.posts | group_by_exp: "post", "post.date |

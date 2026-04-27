@@ -22,9 +22,9 @@ But why did it fail? Why does 16 matter so much — and why did hitting this lim
 
 Without CUDA graphs, hitting this limit would just cause a runtime error for that specific call — recoverable at the application level. With CUDA graphs, the situation is much worse.
 
-CUDA graphs work by **pre-recording** all GPU operations ahead of time, then replaying the recording for speed. vLLM uses this to reduce per-request overhead in production serving. When a graph is captured, the kernel actually runs for real with the target batch size to record what it does. If the kernel throws at capture time — as `torch._int_mm` does for `M ≤ 16` — that batch size is permanently blocked. Since vLLM captures all batch sizes during initialization, every size from 1 to 16 fails, and the engine refuses to start entirely.
+CUDA graphs work by **pre-recording** all GPU operations ahead of time, then replaying the recording for speed. vLLM uses this to reduce per-request overhead in production serving. Before capturing a graph, vLLM performs a **warmup run** for each target batch size. If `torch._int_mm` throws during warmup — as it does for `M ≤ 16` — that batch size can never be successfully captured. Since vLLM warms up all batch sizes during initialization, every size from 1 to 16 fails, and the engine refuses to start entirely.
 
-A single software constraint buried three layers deep in the stack — "CUTLASS kernel → PyTorch `torch._int_mm` → vLLM CUDA graph capture" — becomes a deployment blocker. It can be fixed by (1) padding the batch dimension to `M = 17` before calling `torch._int_mm` when `M ≤ 16` or (2) passing small dimension tracing in vLLM engine.
+A single software constraint buried three layers deep in the stack — "CUTLASS kernel → PyTorch `torch._int_mm` → vLLM CUDA graph capture" — becomes a deployment blocker. It can be fixed by (1) padding the batch dimension to `M = 17` before calling `torch._int_mm` when `M ≤ 16`, or (2) skipping CUDA graph capture for batch sizes `M ≤ 16` in the vLLM engine.
 
 So, *why* does `torch._int_mm` reject `M ≤ 16` in the first place? The answer is in the hardware.
 
@@ -37,7 +37,7 @@ In hardware, MatMul works like an accumulated inner product of outer products. I
 As Figure 1 shows, this access pattern loads the same data repeatedly across iterations, burning memory bandwidth without increasing arithmetic throughput.
 
 <figure>
-  <img src="https://github.com/namgyu-youn/namgyu-youn.github.io/_assets/img/posts/torch-intmm/matmul.png" alt="Alt text">
+  <img src="/assets/img/posts/torch-intmm/matmul.png" alt="Alt text">
   <figcaption>Figure 1. Naive MatMul access pattern: each output element requires a full row and column read</figcaption>
 </figure>
 
@@ -52,7 +52,7 @@ CUDA Cores are general-purpose: each one executes one FMA (Fused Multiply-Add) p
 Tensor Cores solve this by moving the unit of work up from a scalar to a **matrix tile**. A single Tensor Core MMA (Matrix Multiply-Accumulate) instruction computes:
 
 <figure>
-  <img src="https://github.com/namgyu-youn/namgyu-youn.github.io/_assets/img/posts/torch-intmm/tensor_core_gemm.png" alt="Alt text">
+  <img src="/assets/img/posts/torch-intmm/tensor_core_gemm.png" alt="Alt text">
   <figcaption>Figure 2. NVIDIA Tensor Core GEMM in Math</figcaption>
 </figure>
 
@@ -79,7 +79,7 @@ Each generation doesn't just add more cores — it widens the tile, doing more w
 As covered in §03B, on Ampere the INT8 MMA tile height is 16 rows. When `M = 16`, the input matrix fits perfectly within exactly one tile — so the hardware MMA instruction *can* physically execute this. Yet the kernel rejects it.
 
 <figure>
-  <img src="https://github.com/namgyu-youn/namgyu-youn.github.io/_assets/img/posts/torch-intmm/sm80_mma.png" alt="Alt text">
+  <img src="/assets/img/posts/torch-intmm/sm80_mma.png" alt="Alt text">
   <figcaption>Figure 3. NVIDIA Ampere GPU's Instruction</figcaption>
 </figure>
 

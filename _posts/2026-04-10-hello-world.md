@@ -5,6 +5,6 @@ categories: [Diary]
 tags: []
 ---
 
-안녕하세요. 블로그를 시작했습니다. 잘 부탁드립니다.
+블로그를 시작했습니다. 잘 부탁드립니다.
 
 Most posts will be technical write-ups of things I've read, implemented, or debugged.

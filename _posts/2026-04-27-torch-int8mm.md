@@ -1,7 +1,7 @@
 ---
-title: "From CUDA Graph Crash to Tensor Core Tiles: Tracing a vLLM INT8 Bug"
+title: "From CUDA Graph Crash to Tensor Core: Tracing a vLLM INT8 Bug"
 date: 2026-04-27 00:00:00 +0900
-categories: [GPU, PyTorch]
+categories: [Hardware & Kernels]
 tags: [cutlass, tensor-core, vllm]
 ---
 
